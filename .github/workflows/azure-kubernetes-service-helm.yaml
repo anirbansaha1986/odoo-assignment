@@ -21,8 +21,7 @@ on:
 env:
 
   CHART_PATH: "."
-  CHART_OVERRIDE_PATH: "."
-  HELM_VERSION: latest
+  HELM_VERSION: "latest"
 
 jobs:
   helm:
@@ -32,7 +31,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@main
         
-      - name: Set context
+      - name: Set k8s context
         uses: Azure/k8s-set-context@v2
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
@@ -41,7 +40,7 @@ jobs:
         run: helm lint ${{ env.CHART_PATH }}
         working-directory: ${{ env.CHART_PATH }}
 
-      - name: Install release
+      - name: Install release with dry-run mode
         uses: hiberbee/github-action-helm@latest
         with:
           helm: upgrade --install --dry-run ${{ github.ref_name }} ${{ env.CHART_PATH }}
@@ -51,5 +50,4 @@ jobs:
         with:
           renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
-          overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
           helm-version: ${{ env.HELM_VERSION }}
