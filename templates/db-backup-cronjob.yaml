@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.odooDB.backup.name}}
+  namespace: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.odooDB.backup.schedule }}
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 100
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: postgres-backup
+              image: postgres:13
+              env:
+                - name: PGHOST
+                  value: {{ .Values.odooDB.service.name }}.{{ .Release.Name }}
+                - name: PGPORT
+                  value: "5432"
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_USER
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_USER
+                - name: PGDATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_DB
+                - name: POSTGRES_DB
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_DB
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_PASSWORD
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.odooDB.secret.name }}
+                      key: POSTGRES_PASSWORD
+              volumeMounts:
+                - mountPath: {{ .Values.odooDB.backup.volume.mountPath }}
+                  name: {{ .Values.odooApp.name }}-backup-pvc
+              command:
+                - /bin/sh
+                - -c
+                - pg_dump > {{ .Values.odooDB.backup.volume.mountPath }}/$(date +%Y-%m-%d-%H.%M.%S).dump
+
+          volumes:
+            - name: {{ .Values.odooApp.name }}-backup-pvc
+              persistentVolumeClaim:
+                claimName: {{ .Values.odooApp.name }}-backup-pvc

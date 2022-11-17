@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.odooDB.name }}
+  namespace: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      {{ .Values.odooDB.labels.key }}: {{ .Values.odooDB.labels.value }}
+  serviceName: {{ .Values.odooDB.service.name }}
+  replicas: {{ .Values.odooDB.replicaCount }}
+  minReadySeconds: {{ .Values.odooDB.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.odooDB.labels.key }}: {{ .Values.odooDB.labels.value }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.odooDB.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Values.odooDB.container.name }}
+          image: {{ .Values.odooDB.container.image }}:{{ .Values.odooDB.container.tag }}
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.odooDB.secret.name }}
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.odooDB.secret.name }}
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.odooDB.secret.name }}
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: {{ .Values.odooApp.name }}-pvc
+              mountPath: /var/lib/postgresql
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.odooApp.name }}-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: managed-csi
+        resources:
+          requests:
+            storage: {{ .Values.odooDB.volume.size }}

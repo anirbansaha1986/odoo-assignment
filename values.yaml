@@ -1,0 +1,50 @@
+# Default values for odoo-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: odoo
+
+odooApp:
+  name: odoo
+  replicaCount: 2
+  labels:
+    key: app
+    value: odoo
+  container:
+    name: odoo
+    image: odoo
+    tag: 15
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1024Mi"
+        cpu: "500m"
+  volume:
+    size: 5Gi
+
+odooDB:
+  name: postgres
+  replicaCount: 1
+  minReadySeconds: 10
+  labels:
+    key: app
+    value: postgres
+  terminationGracePeriodSeconds: 30
+  service:
+    name: db
+  secret:
+    name: postgres
+  container:
+    name: postgres
+    image: postgres
+    tag: 13
+  volume:
+    size: 5Gi
+  backup:
+    name: nightly-db-backup
+    schedule: "0 0 * * *"
+    volume:
+      size: 5Gi
+      mountPath: /backups

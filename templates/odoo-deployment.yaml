@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.odooApp.name }}
+  namespace: {{ .Release.Name }}
+  labels:
+    {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
+spec:
+  replicas: {{ .Values.odooApp.replicaCount }}
+  selector:
+    matchLabels:
+      {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
+  template:
+    metadata:
+      name: {{ .Values.odooApp.name }}
+      labels:
+        {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
+    spec:
+      volumes:
+        - name: {{ .Values.odooApp.name }}-shared-pvc
+          persistentVolumeClaim:
+            claimName: {{ .Values.odooApp.name }}-shared-pvc
+      containers:
+        - name: {{ .Values.odooApp.container.name }}
+          image: {{ .Values.odooApp.container.image }}:{{ .Values.odooApp.container.tag }}
+          ports:
+            - name: {{ .Values.odooApp.container.name }}
+              containerPort: 8069
+              protocol: TCP
+          volumeMounts:
+            - mountPath: "/var/lib/odoo"
+              name: {{ .Values.odooApp.name }}-shared-pvc
+          resources:
+            requests:
+              memory: {{ .Values.odooApp.container.resources.requests.memory }}
+              cpu: {{ .Values.odooApp.container.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.odooApp.container.resources.limits.memory }}
+              cpu: {{ .Values.odooApp.container.resources.limits.cpu }}

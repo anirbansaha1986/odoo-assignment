@@ -1,0 +1,6 @@
+apiVersion: v2
+name: odoo-helm
+description: A Helm chart for Avoin.Systems' assignment
+type: application
+version: 1.0.0
+appVersion: "15.0"

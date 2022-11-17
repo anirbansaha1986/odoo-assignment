@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.odooApp.name }}-shared-pvc
+  namespace: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ .Values.odooApp.volume.size }}
+  storageClassName: azurefile-csi
