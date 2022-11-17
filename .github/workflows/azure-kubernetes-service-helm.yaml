@@ -22,7 +22,7 @@ env:
 
   CHART_PATH: "."
   CHART_OVERRIDE_PATH: "."
-  HELM_VERSION: 3.10.2
+  HELM_VERSION: latest
 
 jobs:
   helm:
@@ -46,7 +46,7 @@ jobs:
         with:
           helm: upgrade --install --dry-run ${{ github.ref_name }} ${{ env.CHART_PATH }}
           
-      - name: Install Halm chart
+      - name: Install Helm chart
         uses: azure/k8s-bake@v2.2
         with:
           renderEngine: 'helm'
