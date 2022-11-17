@@ -3,19 +3,14 @@
 # This workflow assumes you have already created the target AKS cluster
 #
 # To configure this workflow:
-#
-# 1. Set the following secrets in your repository (instructions for getting these
-#    https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux)):
-#    - AZURE_CLIENT_ID
-#    - AZURE_TENANT_ID
-#    - AZURE_SUBSCRIPTION_ID
-#    - RESOURCE_GROUP
-#    - CLUSTER_NAME
+# 1. Set the following secret in your repository:	
+#    - KUBE_CONFIG	
 #
 # 2. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Helm.
-#    Set your helmChart, overrideFiles, overrides, and helm-version to suit your configuration.
+#    Set your helmChart, overrideFiles, and helm-version to suit your configuration.
 #    - CHART_PATH (path to your helm chart)
 #    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
+#    - HELM_VERSION
 
 name: Build and deploy an app to AKS with Helm
 
@@ -27,41 +22,34 @@ env:
 
   CHART_PATH: "."
   CHART_OVERRIDE_PATH: "."
+  HELM_VERSION: 3.10.2
 
 jobs:
-
-  deploy:
-    permissions:
-      actions: read
-      contents: read
-      id-token: write
+  helm:
+    name: Helm
     runs-on: ubuntu-latest
     steps:
-      # Checks out the repository this file is in
-      - uses: actions/checkout@v3
-
-      # Logs in with your Azure credentials
-      - name: Azure login
-        uses: azure/login@v1.4.6
+      - name: Checkout sources
+        uses: actions/checkout@main
+        
+      - name: Set context
+        uses: Azure/k8s-set-context@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
-      - name: Get K8s context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
-          cluster-name: ${{ secrets.CLUSTER_NAME }}
+      - name: Lint chart
+        run: helm lint ${{ env.CHART_PATH }}
+        working-directory: ${{ env.CHART_PATH }}
 
-      # Runs Helm to create manifest files
-      - name: Bake deployment
-        uses: azure/k8s-bake@v2
+      - name: Install release
+        uses: hiberbee/github-action-helm@latest
         with:
-          renderEngine: "helm"
+          helm: upgrade --install --dry-run ${{ GITHUB_REF_NAME }} ${{ env.CHART_PATH }}
+          
+      - name: Install Halm chart
+        uses: azure/k8s-bake@v2.2
+        with:
+          renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
-        # overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
-        # overrides: |
-        #   replicas:2
-          helm-version: "latest"
+          overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
+          helm-version: ${{ env.HELM_VERSION }}
