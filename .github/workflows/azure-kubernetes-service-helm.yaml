@@ -36,14 +36,9 @@ jobs:
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-      - name: Lint chart
-        run: helm lint ${{ env.CHART_PATH }}
-        working-directory: ${{ env.CHART_PATH }}
-
-      - name: Install release with dry-run mode
-        uses: hiberbee/github-action-helm@latest
-        with:
-          helm: upgrade --install --dry-run ${{ github.ref_name }} ${{ env.CHART_PATH }}
+#       - name: Lint chart
+#         run: helm lint ${{ env.CHART_PATH }}
+#         working-directory: ${{ env.CHART_PATH }}
           
       - name: Install Helm chart
         uses: azure/k8s-bake@v2.2
@@ -51,3 +46,8 @@ jobs:
           renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
           helm-version: ${{ env.HELM_VERSION }}
+        id: bake
+
+      - uses: Azure/k8s-deploy@v1
+        with:
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
