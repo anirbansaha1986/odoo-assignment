@@ -26,6 +26,11 @@ odooApp:
     volumeModes: Filesystem
 
 odooDB:
+  # required credentials for the database!
+  credentials:
+    user:
+    password:
+    database:
   name: postgres
   replicaCount: 1
   minReadySeconds: 10
@@ -37,11 +42,6 @@ odooDB:
     name: db
   secret:
     name: postgres
-  # required credentials for the database!
-  credentials:
-    user:
-    password:
-    database:
   container:
     name: postgres
     image: postgres
