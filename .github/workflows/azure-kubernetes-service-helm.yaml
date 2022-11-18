@@ -41,7 +41,7 @@ jobs:
 
       - name: Setting up the namespace
         run: |
-          kubectl create namespace ${{ github.ref_name }}
+          kubectl create namespace ${{ github.ref_name }} --dry-run=client -o yaml | kubectl apply -f -
           
       - name: Install Helm chart
         uses: azure/k8s-bake@v2
