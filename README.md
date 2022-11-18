@@ -43,7 +43,7 @@ export KUBECONFIG=/path/to/kubeconfig
 4. Create a new namespace for your application if you need:
 
 ```
-kubectl create namespace <namespace>
+kubectl create namespace <application-namespace>
 ```
 
 5. Install [Helm](https://helm.sh/docs/intro/install/) package manager.
@@ -84,7 +84,7 @@ The application will be hosted at the host specified on ingress.
 Get the hostname of you applciation:
 
 ```
- kubectl get ingress -n <namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
+ kubectl get ingress -n <application-namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
 ```
 
 Then use the output as a link and navigate to it in a browser.
@@ -100,5 +100,5 @@ helm uninstall -n <application-namespace> <application-name>
 Don't forget to remove the namespace from your Kubernetes cluster if you don't need it anymore:
 
 ```
-kubectl delete namespace <namespace>
+kubectl delete namespace <application-namespace>
 ```
