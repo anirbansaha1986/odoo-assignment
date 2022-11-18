@@ -51,10 +51,10 @@ jobs:
           helm-version: ${{ env.HELM_VERSION }}
           releaseName: ${{ github.ref_name }}
           namespace: ${{ github.ref_name }}
-          arguments: |
-            --set odooDB.credentials.user=${{ secrets.PG_USER }}
-            --set odooDB.credentials.password=${{ secrets.PG_PASSWORD }}
-            --set odooDB.credentials.database=${{ secrets.PG_DATABASE }}   
+          overrides: |
+            odooDB.credentials.user:${{ secrets.PG_USER }}
+            odooDB.credentials.password:${{ secrets.PG_PASSWORD }}
+            odooDB.credentials.database:${{ secrets.PG_DATABASE }}   
         id: bake
 
       - name: Deploying Halm chart
