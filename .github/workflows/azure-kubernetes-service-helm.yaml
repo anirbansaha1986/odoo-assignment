@@ -27,8 +27,8 @@ env:
   HELM_VERSION: "latest"
 
 jobs:
-  helm:
-    name: Helm
+  deploy:
+    name: Helm deployment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
