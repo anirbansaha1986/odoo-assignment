@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: odoo
-
 odooApp:
   name: odoo
   replicaCount: 2
@@ -23,6 +21,9 @@ odooApp:
         cpu: "500m"
   volume:
     size: 5Gi
+    type: azurefile-csi
+    accessModes: ReadWriteMany
+    volumeModes: Filesystem
 
 odooDB:
   name: postgres
@@ -42,9 +43,14 @@ odooDB:
     tag: 13
   volume:
     size: 5Gi
+    type: managed-csi
+    accessModes: ReadWriteOnce
   backup:
     name: nightly-db-backup
     schedule: "0 0 * * *"
     volume:
       size: 5Gi
       mountPath: /backups
+      type: azurefile-csi
+      accessModes: ReadWriteMany
+      volumeModes: Filesystem

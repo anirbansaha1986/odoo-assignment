@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.odooApp.name }}
-  namespace: {{ .Release.Name }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}

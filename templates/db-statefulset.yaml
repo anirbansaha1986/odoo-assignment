@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.odooDB.name }}
-  namespace: {{ .Release.Name }}
+  name: {{ .Values.odooDB.name }}-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -36,14 +36,15 @@ spec:
                   name: {{ .Values.odooDB.secret.name }}
                   key: POSTGRES_DB
           volumeMounts:
-            - name: {{ .Values.odooApp.name }}-pvc
+            - name: {{ .Release.Name }}-pvc
               mountPath: /var/lib/postgresql
   volumeClaimTemplates:
     - metadata:
-        name: {{ .Values.odooApp.name }}-pvc
+        name: {{ .Release.Name }}-pvc
       spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: managed-csi
+        accessModes: 
+          - {{ .Values.odooDB.volume.accessModes }}
+        storageClassName: {{ .Values.odooDB.volume.type }}
         resources:
           requests:
             storage: {{ .Values.odooDB.volume.size }}

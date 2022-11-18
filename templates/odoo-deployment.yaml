@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.odooApp.name }}
-  namespace: {{ .Release.Name }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
 spec:
@@ -12,14 +12,14 @@ spec:
       {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
   template:
     metadata:
-      name: {{ .Values.odooApp.name }}
+      name: {{ .Release.Name }}
       labels:
         {{ .Values.odooApp.labels.key }}: {{ .Values.odooApp.labels.value }}
     spec:
       volumes:
-        - name: {{ .Values.odooApp.name }}-shared-pvc
+        - name: {{ .Release.Name }}-shared-pvc
           persistentVolumeClaim:
-            claimName: {{ .Values.odooApp.name }}-shared-pvc
+            claimName: {{ .Release.Name }}-shared-pvc
       containers:
         - name: {{ .Values.odooApp.container.name }}
           image: {{ .Values.odooApp.container.image }}:{{ .Values.odooApp.container.tag }}
@@ -29,7 +29,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: "/var/lib/odoo"
-              name: {{ .Values.odooApp.name }}-shared-pvc
+              name: {{ .Release.Name }}-shared-pvc
           resources:
             requests:
               memory: {{ .Values.odooApp.container.resources.requests.memory }}
