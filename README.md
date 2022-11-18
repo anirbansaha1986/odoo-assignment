@@ -58,13 +58,13 @@ odooDB:
     database: <database>
 ```
 
-and then run the following command:
+After that, run the following command to install the application:
 
 ```
 helm install --namespace <application-namespace> <application-name> .
 ```
 
-You can also provide them in your command directly:
+You can also provide the connection credentials directly in your command:
 
 ```
 helm install --namespace <application-namespace> \
