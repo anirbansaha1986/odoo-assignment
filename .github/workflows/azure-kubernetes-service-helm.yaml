@@ -9,10 +9,8 @@
 #    - PG_PASSWORD
 #    - PG_DATABASE
 #
-# 2. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Helm.
-#    Set your helmChart, overrideFiles, and helm-version to suit your configuration.
+# 2. Set the following environmental variables to adjust your configuration:
 #    - CHART_PATH (path to your helm chart)
-#    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
 #    - HELM_VERSION
 
 name: AKS Helm chart deployment
