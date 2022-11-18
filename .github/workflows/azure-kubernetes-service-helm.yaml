@@ -15,7 +15,7 @@
 #    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
 #    - HELM_VERSION
 
-name: Build and deploy an app to AKS with Helm
+name: AKS Helm chart deployment
 
 on:
   push:
@@ -27,38 +27,39 @@ env:
   HELM_VERSION: "latest"
 
 jobs:
-  helm:
-    name: Helm
+  deploy:
+    name: Helm deployment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
         uses: actions/checkout@main
         
       - name: Set k8s context
-        uses: Azure/k8s-set-context@v2
+        uses: Azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-#       - name: Lint chart
-#         run: helm lint ${{ env.CHART_PATH }}
-#         working-directory: ${{ env.CHART_PATH }}
+      - name: Setting up the namespace
+        run: |
+          kubectl create namespace ${{ github.ref_name }} --dry-run=client -o yaml | kubectl apply -f -
           
       - name: Install Helm chart
-        uses: azure/k8s-bake@v2.2
+        uses: azure/k8s-bake@v2
         with:
           renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
           helm-version: ${{ env.HELM_VERSION }}
           releaseName: ${{ github.ref_name }}
           namespace: ${{ github.ref_name }}
-          arguments: |
-            --set odooDB.credentials.user=${{ secrets.PG_USER }}
-            --set odooDB.credentials.password=${{ secrets.PG_PASSWORD }}
-            --set odooDB.credentials.database=${{ secrets.PG_DATABASE }}
-            
+          overrides: |
+            odooDB.credentials.user:${{ secrets.PG_USER }}
+            odooDB.credentials.password:${{ secrets.PG_PASSWORD }}
+            odooDB.credentials.database:${{ secrets.PG_DATABASE }}  
+          arguments: ""
         id: bake
 
-      - uses: Azure/k8s-deploy@v3.1
+      - name: Deploying Halm chart
+        uses: Azure/k8s-deploy@v4
         with:
           namespace: ${{ github.ref_name }}
           manifests: ${{ steps.bake.outputs.manifestsBundle }}

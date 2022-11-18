@@ -2,6 +2,8 @@
 
 # Helm Chart - Avoin Systems Assignment
 
+[![AKS Helm chart deployment](https://github.com/sla686/odoo-assignment/actions/workflows/azure-kubernetes-service-helm.yaml/badge.svg)](https://github.com/sla686/odoo-assignment/actions/workflows/azure-kubernetes-service-helm.yaml)
+
 [Description](#description) •
 [Prerequisites](#prerequisites) •
 [Installation](#installation) •
