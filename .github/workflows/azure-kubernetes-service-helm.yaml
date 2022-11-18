@@ -15,7 +15,7 @@
 #    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
 #    - HELM_VERSION
 
-name: Build and deploy an app to AKS with Helm
+name: AKS Helm chart deployment
 
 on:
   push:
