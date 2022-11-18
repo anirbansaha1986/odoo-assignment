@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@main
         
       - name: Set k8s context
-        uses: Azure/k8s-set-context@v2
+        uses: Azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
@@ -44,7 +44,7 @@ jobs:
 #         working-directory: ${{ env.CHART_PATH }}
           
       - name: Install Helm chart
-        uses: azure/k8s-bake@v2.2
+        uses: azure/k8s-bake@latest
         with:
           renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
@@ -54,7 +54,8 @@ jobs:
           overrides: |
             odooDB.credentials.user:${{ secrets.PG_USER }}
             odooDB.credentials.password:${{ secrets.PG_PASSWORD }}
-            odooDB.credentials.database:${{ secrets.PG_DATABASE }}   
+            odooDB.credentials.database:${{ secrets.PG_DATABASE }}  
+          arguments: ""
         id: bake
 
       - name: Deploying Halm chart
