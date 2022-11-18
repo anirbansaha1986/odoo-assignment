@@ -54,11 +54,11 @@ jobs:
           arguments: |
             --set odooDB.credentials.user=${{ secrets.PG_USER }}
             --set odooDB.credentials.password=${{ secrets.PG_PASSWORD }}
-            --set odooDB.credentials.database=${{ secrets.PG_DATABASE }}
-            
+            --set odooDB.credentials.database=${{ secrets.PG_DATABASE }}   
         id: bake
 
-      - uses: Azure/k8s-deploy@v3.1
+      - name: Deploying Halm chart
+        uses: Azure/k8s-deploy@v3.1
         with:
           namespace: ${{ github.ref_name }}
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
