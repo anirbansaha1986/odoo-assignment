@@ -47,6 +47,7 @@ jobs:
           helmChart: ${{ env.CHART_PATH }}
           helm-version: ${{ env.HELM_VERSION }}
           releaseName: ${{ github.ref_name }}
+          namespace: ${{ github.ref_name }}
         id: bake
 
       - uses: Azure/k8s-deploy@v3.1
