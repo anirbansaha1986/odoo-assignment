@@ -80,6 +80,15 @@ helm install --namespace <application-namespace> \
 helm status -n <application-namespace> <application-name>
 ```
 
+The application will be hosted at the host specified on ingress.
+Get the hostname of you applciation:
+
+```
+ kubectl get ingress -n <namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
+```
+
+Then use the output as a link and navigate to it in a browser.
+
 ## Removal
 
 You can uninstall the application with the following command:
