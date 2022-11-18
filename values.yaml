@@ -37,6 +37,11 @@ odooDB:
     name: db
   secret:
     name: postgres
+  # required credentials for the database!
+  credentials:
+    user:
+    password:
+    database:
   container:
     name: postgres
     image: postgres
