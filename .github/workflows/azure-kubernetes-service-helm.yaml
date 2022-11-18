@@ -44,7 +44,7 @@ jobs:
 #         working-directory: ${{ env.CHART_PATH }}
           
       - name: Install Helm chart
-        uses: azure/k8s-bake@latest
+        uses: azure/k8s-bake@v2
         with:
           renderEngine: 'helm'
           helmChart: ${{ env.CHART_PATH }}
