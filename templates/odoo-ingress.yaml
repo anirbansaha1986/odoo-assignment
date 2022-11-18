@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{ .Release.Name }}-{{ .Release.Namespace }}.sla686-avoin-assignment.com
+    - host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.odooApp.ingress.host }}
       http:
         paths:
           - path: /

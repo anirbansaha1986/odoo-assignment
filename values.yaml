@@ -24,6 +24,8 @@ odooApp:
     type: azurefile-csi
     accessModes: ReadWriteMany
     volumeModes: Filesystem
+  ingress:
+    host: viacheslav-semushin.com
 
 odooDB:
   # required credentials for the database!
