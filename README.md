@@ -18,10 +18,15 @@
 
 ## Prerequisites
 
-Kubernetes cluster must be configured with:
+Kubernetes cluster must be at least version **1.23.x** or higher, and be configured with:
 
 1. An ingress controller with ingressClassName _ngnix_.
 2. A CSI provisioner for volumes.
+
+The following tools must be installed on your machine:
+
+1. [kubectl](https://kubernetes.io/docs/tasks/tools/) command-line tool.
+2. [Helm](https://helm.sh/docs/intro/install/) package manager.
 
 ## Installation
 
@@ -32,23 +37,19 @@ git clone https://github.com/sla686/odoo-assignment.git odoo-app
 cd odoo-app
 ```
 
-2. Install [kubectl](https://kubernetes.io/docs/tasks/tools/) command-line tool.
-
-3. Export _KUBECONFIG_ variable pointing to the kubernetes configuration file:
+2. Export _KUBECONFIG_ variable pointing to the kubernetes configuration file:
 
 ```
 export KUBECONFIG=/path/to/kubeconfig
 ```
 
-4. Create a new namespace for your application if you need:
+3. Create a new namespace for your application if you need:
 
 ```
 kubectl create namespace <application-namespace>
 ```
 
-5. Install [Helm](https://helm.sh/docs/intro/install/) package manager.
-
-6. To install the application, you have to provide connection credentials to connect to the application database. You can specify them in your values.yaml file:
+4. To install the application, you have to provide connection credentials so that the application can connect to the database. You can specify them in your values.yaml file:
 
 ```
 odooDB:
@@ -74,7 +75,7 @@ helm install --namespace <application-namespace> \
   <application-name> .
 ```
 
-7. Check details about your release:
+5. Check details about your release:
 
 ```
 helm status -n <application-namespace> <application-name>
