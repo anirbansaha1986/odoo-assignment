@@ -39,6 +39,10 @@ jobs:
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
+      - name: Setting up the namespace
+        run: |
+          kubectl create namespace ${{ github.ref_name }}
+      
 #       - name: Lint chart
 #         run: helm lint ${{ env.CHART_PATH }}
 #         working-directory: ${{ env.CHART_PATH }}
