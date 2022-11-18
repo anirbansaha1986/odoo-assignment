@@ -81,14 +81,14 @@ helm install --namespace <application-namespace> \
 helm status -n <application-namespace> <application-name>
 ```
 
-The application will be hosted at the host specified on ingress.
-Get the hostname of you applciation:
+The application will be hosted on the host which is specified on the ingress.
+Get the hostname of your application:
 
 ```
  kubectl get ingress -n <application-namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
 ```
 
-Then use the output as a link and navigate to it in a browser.
+Then use the output as a link and navigate to it in your browser.
 
 ## Removal
 
