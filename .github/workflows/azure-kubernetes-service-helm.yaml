@@ -23,7 +23,7 @@ on:
 env:
   CHART_PATH: "."
   HELM_VERSION: "latest"
-  DOMAIN_HOST: "viacheslav-semushin.com" # For the IP form, use nip.io postfix: "x.x.x.x.nip.io"
+  HOST_ADDRESS: "viacheslav-semushin.com" # For the IP form, use nip.io postfix: "x.x.x.x.nip.io"
 
 jobs:
   deploy:
@@ -54,6 +54,7 @@ jobs:
             odooDB.credentials.user:${{ secrets.PG_USER }}
             odooDB.credentials.password:${{ secrets.PG_PASSWORD }}
             odooDB.credentials.database:${{ secrets.PG_DATABASE }}
+            odooApp.ingress.host:${{ env.HOST_ADDRESS }}
         id: bake
 
       - name: Deploying Halm chart
