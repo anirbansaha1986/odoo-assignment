@@ -18,10 +18,11 @@
 
 ## Prerequisites
 
-Kubernetes cluster must be at least version **1.23.x** or higher, and be configured with:
+Kubernetes cluster must be at least version **1.23.x** or higher, and be configured with the following:
 
 1. An ingress controller with ingressClassName _ngnix_.
 2. A CSI provisioner for volumes.
+3. Optional - configure a public DNS name for your Ingress Controller external IP.
 
 The following tools must be installed on your machine:
 
@@ -49,9 +50,12 @@ export KUBECONFIG=/path/to/kubeconfig
 kubectl create namespace <application-namespace>
 ```
 
-4. To install the application, you have to provide connection credentials so that the application can connect to the database. You can specify them in your values.yaml file:
+4. To install the application, you have to provide connection credentials so that the application can connect to the database. In addition, you have to provide the host address for your Ingress configuration. You can specify them in your _values.yaml_ file:
 
 ```
+odooApp:
+  ingress:
+    host: <ingress-controller-dns-name> OR <ingress-controller-public-IP>
 odooDB:
   credentials:
     user: <user>
@@ -59,23 +63,26 @@ odooDB:
     database: <database>
 ```
 
-After that, run the following command to install the application:
+**_Note: If you would like to specify external IP of the Ingress Controller, provide it in the following format: x.x.x.x.nip.io_**
+
+5. After that, run the following command to install the application:
 
 ```
 helm install --namespace <application-namespace> <application-name> .
 ```
 
-You can also provide the connection credentials directly in your command:
+You can also provide the connection credentials directly in your command without editing the _values.yaml_ file:
 
 ```
 helm install --namespace <application-namespace> \
   --set odooDB.credentials.user=<user> \
   --set odooDB.credentials.password=<password> \
   --set odooDB.credentials.database=<database> \
+  --set odooApp.ingress.host=<ingress-controller-dns-name> OR <ingress-controller-public-IP> \
   <application-name> .
 ```
 
-5. Check details about your release:
+6. Check details about your release:
 
 ```
 helm status -n <application-namespace> <application-name>
@@ -85,7 +92,7 @@ The application will be hosted on the host which is specified on the ingress.
 Get the hostname of your application:
 
 ```
- kubectl get ingress -n <application-namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
+kubectl get ingress -n <application-namespace> -o=jsonpath='{.items[0].spec.rules[0].host}'
 ```
 
 Then use the output as a link and navigate to it in your browser.

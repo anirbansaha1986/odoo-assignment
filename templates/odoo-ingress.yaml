@@ -8,7 +8,9 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.odooApp.ingress.host }}
+    - 
+
+      host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{ required "Public hostname or external IP is required!" .Values.odooApp.ingress.host }}
       http:
         paths:
           - path: /
