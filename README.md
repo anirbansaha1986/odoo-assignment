@@ -22,7 +22,7 @@ Kubernetes cluster must be at least version **1.23.x** or higher, and be configu
 
 1. An ingress controller with ingressClassName _ngnix_.
 2. A CSI provisioner for volumes.
-3. Optional - configure a public DNS name for your Ingress Controller external IP.
+3. _Optional_ - configure a public DNS name for your Ingress Controller external IP.
 
 The following tools must be installed on your machine:
 
@@ -71,7 +71,7 @@ odooDB:
 helm install --namespace <application-namespace> <application-name> .
 ```
 
-You can also provide the connection credentials directly in your command without editing the _values.yaml_ file:
+You can also provide the connection credentials directly to the command without editing the _values.yaml_ file:
 
 ```
 helm install --namespace <application-namespace> \
